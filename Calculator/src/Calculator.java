@@ -1,10 +1,8 @@
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Arrays;
-
-import javax.sound.sampled.Line;
-import javax.swing.*;
-import javax.swing.border.LineBorder;
+import java.awt.*; //for GUI layout, colors, and fonts
+import java.awt.event.*; //for handling events like button clicks
+import java.util.Arrays; //for using array method in java utilities
+import javax.swing.*; //for Swing components like JFrame, JPanel, JButton, etc
+import javax.swing.border.LineBorder; //for adding borders to buttons
 
 public class Calculator {
     int windowWidth = 360; //width of window
@@ -47,7 +45,7 @@ public class Calculator {
         //frame.setVisible(true); //true so the window is visible, this statement is movement down all the way below
         frame.setSize(windowWidth, windowHeight); //frame size is same as window width and height
         frame.setLocationRelativeTo(null); //setting location to null centers the window when the user opens the application
-        frame.setResizable(false); //false makes it so the user cannot resize the window in any way
+        frame.setResizable(true); //false makes it so the user cannot resize the window in any way
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //makes it so when the user clicks on the x button the program will be terminated (closed)
         frame.setLayout(new BorderLayout()); //BorderLayout makes it so you can place stuff within the window
 
