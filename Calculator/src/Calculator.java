@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
+
+import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
@@ -28,15 +30,21 @@ public class Calculator {
     JPanel displayPanel = new JPanel(); //panel for the label
     JPanel buttonsPanel = new JPanel(); //buttons panel
 
+    //These variables set the initial values before the user inputs anything that changes them
+    String num1 = "0"; //variable that keeps track of the first number 
+    String operator = null; //variable thatkeeps track of the operator
+    String num2 = null; //variable that keeps track of the second number the user inputs
+    //A+B, A-B, A*B, A/B
+
     Calculator() { //constructor class for window properties
         try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName()); //forces java to use its own neutral theme the user's operating system’s buttons, but this statement was added, the buttons were all white and the custom colors didn't apply
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName()); //forces java to use its own neutral theme the user's operating system’s buttons, before this statement was added, the buttons were all white and the custom colors didn't apply. this wasn't in the guide
         } 
-        catch (Exception e) { //catches the error and instead of crashing, the program runs the catch statement
+        catch (Exception e) { //catches the error and instead of crashing, the program runs the catch statement. e is just a common variable programmers use
             e.printStackTrace(); //gives name of the error (like ClassNotFoundException) and stack trace showing where the error happened in the code.
         }
 
-        frame.setVisible(true); //true so the window is visible
+        //frame.setVisible(true); //true so the window is visible, this statement is movement down all the way below
         frame.setSize(windowWidth, windowHeight); //frame size is same as window width and height
         frame.setLocationRelativeTo(null); //setting location to null centers the window when the user opens the application
         frame.setResizable(false); //false makes it so the user cannot resize the window in any way
@@ -64,7 +72,9 @@ public class Calculator {
             button.setFont(new Font("Arial", Font.PLAIN, 30)); //font, formatting, size
             button.setText(buttonValue); //sets the button display text
             button.setFocusable(false); //makes the retangular border around the button characters invisible
+            button.setBorder(new LineBorder(customBlack)); //button border color
             button.setOpaque(true); //makes the button opaque
+
             if (Arrays.asList(topSymbols).contains(buttonValue)) { //if statement; if the symbol in the for loop is a part of the topSymbols array, run code inside
                 button.setBackground(customLightGray); //button color
                 button.setForeground(customBlack); //font (foreground) color
@@ -79,6 +89,91 @@ public class Calculator {
             }
             
             buttonsPanel.add(button); //adds the button to the panel
+
+            button.addActionListener(new ActionListener() { //adds an action listener that handles button clicks
+                public void actionPerformed(ActionEvent e) { //method is called when said button is clicked
+                    JButton button = (JButton) e.getSource(); //gets the button that was clicked
+                    String buttonValue = button.getText(); //gets the text of the clicked button
+                    if (Arrays.asList(rightSymbols).contains(buttonValue)) {
+                        if (buttonValue == "=") { //if = is clicked
+                            if (num1 != null) { //if the first number the user inputs isn't equal to null, run code below
+                                num2 = displayLabel.getText();
+                                double numFirst = Double.parseDouble(num1); //turns string num1 into double numFirst
+                                double numSecond = Double.parseDouble(num2); //turns string num2 into double numSecond
+
+                                if(operator == "+") { //if operator is addition, run code below
+                                    displayLabel.setText(removeZeroDecimal(numFirst+numSecond));
+                                }
+                                else if (operator == "-") { //if operator is subtraction, run code below
+                                    displayLabel.setText(removeZeroDecimal(numFirst-numSecond));
+                                }
+                                else if(operator == "×") { //if operator is multiplication, run code below
+                                    displayLabel.setText(removeZeroDecimal(numFirst*numSecond));
+                                }
+                                else if(operator == "÷") { //if operator is division, run code below
+                                    displayLabel.setText(removeZeroDecimal(numFirst/numSecond));
+                                }
+                                clearAll(); //clear all function
+
+                            }
+                       }
+                       else if ("+-×÷".contains(buttonValue)) { //if operators are clicked
+                            if (operator == null) { //if the operator variable is still null, run code below
+                                num1 = displayLabel.getText(); //saves the first user input number to num1 variable
+                                displayLabel.setText("0"); //resets the display and shows 0 again
+                                num2 = "0"; //gives num2 variable a string value of "0"
+                            }
+                            operator = buttonValue; //makes it so if the user clicks another operator, it doesn't run the code above again, it only changes the operator, i.e. if 12 x 3 is clicked and the user clicks the + button, it only changes the operator value to +, so now the equation is 12 + 3
+                       }
+                    }
+                    else if (Arrays.asList(topSymbols).contains(buttonValue)) {
+                        if (buttonValue == "AC") { //if AC is clicked
+                            clearAll(); //clear all function, code is down all the way below
+                            displayLabel.setText("0");
+                        }
+                        else if (buttonValue == "+/-") { //if +/- is clicked
+                            double numDisplay = Double.parseDouble(displayLabel.getText()); //gets the string and converts that into a double
+                            numDisplay *= -1; //multiplies the number by -1
+                            displayLabel.setText(removeZeroDecimal(numDisplay)); //remove zero decimal function, code is down all the way below
+                        }
+                        else if (buttonValue == "%") { //if % is clicked
+                            double numDisplay = Double.parseDouble(displayLabel.getText()); //gets the string and converts that into a double
+                            numDisplay /= 100; //divides the number by 100
+                            displayLabel.setText(removeZeroDecimal(numDisplay)); //remove zero decimal function, code is down all the way below
+                        }
+                    }
+                    else { //digits or
+                        if (buttonValue == ".") { //if . is clicked
+                            if (!displayLabel.getText().contains(buttonValue)) { //if the display doens't have a "." then it will display it. if there already is a "." in the number, it won't register
+                                displayLabel.setText(displayLabel.getText() + buttonValue);
+                            }
+                        }
+                        else if ("0123456789".contains(buttonValue)) { //if any of the digits are clicked
+                            if (displayLabel.getText() == "0") { //if the current display label text is a 0, run code below
+                                displayLabel.setText(buttonValue); //i.e. 05 becomes 5
+                            }
+                            else {
+                                displayLabel.setText(displayLabel.getText() + buttonValue); //clicking 5 2 times will be 55, works smoothly
+                            }
+                        }
+                    }
+                }
+            });
+            frame.setVisible(true); //set last so the program runs more optimally
         }
+    }
+
+    void clearAll() { //clear all function resets the variables to their initial values
+        num1 = "0";
+        operator = null;
+        num2 = null;
+
+    }
+
+    String removeZeroDecimal(double numDisplay) {
+        if (numDisplay % 1 == 0) { //if the number is a whole number, run code below
+            return Integer.toString((int) numDisplay); //converts the number to an integer and returns it as a string
+        }
+        return Double.toString(numDisplay);
     }
 }
