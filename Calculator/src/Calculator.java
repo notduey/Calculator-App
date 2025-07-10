@@ -156,6 +156,11 @@ public class Calculator {
                                 displayLabel.setText(displayLabel.getText() + buttonValue); //clicking 5 2 times will be 55, works smoothly
                             }
                         }
+                        else if (buttonValue == "√") {
+                            double numDisplay = Double.parseDouble(displayLabel.getText()); //gets the string and converts that into a double
+                            numDisplay = Math.sqrt(numDisplay); //gets the square root of the number
+                            displayLabel.setText(removeZeroDecimal(numDisplay)); //remove zero decimal function, code is down all the way below
+                        }
                     }
                 }
             });
