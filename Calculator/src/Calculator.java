@@ -13,9 +13,20 @@ public class Calculator {
     Color customBlack = new Color(28, 28, 28); //custom black
     Color customPurple = new Color(143, 78, 255); //custom purple
 
+    String[] buttonValues = { //button values
+        "AC", "+/-", "%", "÷", 
+        "7", "8", "9", "×", 
+        "4", "5", "6", "-",
+        "1", "2", "3", "+",
+        "0", ".", "√", "="
+    };
+    String[] rightSymbols = {"÷", "×", "-", "+", "="}; //symbols on right
+    String[] topSymbols = {"AC", "+/-", "%"}; //symbols on top
+
     JFrame frame =  new JFrame("Calculator"); //the window itself (JFrame) with calculator as the name
     JLabel displayLabel = new JLabel(); //label for the text
     JPanel displayPanel = new JPanel(); //panel for the label
+    JPanel buttonsPanel = new JPanel();
 
     Calculator() { //constructor class for window properties
         frame.setVisible(true); //true so the window is visible
@@ -34,6 +45,18 @@ public class Calculator {
 
         displayPanel.setLayout(new BorderLayout()); //setting the layout
         displayPanel.add(displayLabel); //putting the text label inside the panel
-        frame.add(displayPanel); //putting the panel in our window
+        frame.add(displayPanel, BorderLayout.NORTH); //putting the panel in our window, display panel offset to top of window
+
+        buttonsPanel.setLayout(new GridLayout(5, 4)); //grid panel; 5 rows, 4 columns
+        buttonsPanel.setBackground(customBlack); //button background
+        frame.add(buttonsPanel); //adds button panel to window
+
+        for (int i = 0; i < buttonValues.length; i++) { //for loop that correlates to the buttonValues array and makes new button
+            JButton button = new JButton(); //creates new Jbutton instance
+            String buttonValue = buttonValues[i]; //gets the button's label from the array
+            button.setFont(new Font("Arial", Font.PLAIN, 30)); //font, formatting, size
+            button.setText(buttonValue); //sets the button display text
+            buttonsPanel.add(button); //adds the button to the panel
+        }
     }
 }
