@@ -26,9 +26,16 @@ public class Calculator {
     JFrame frame =  new JFrame("Calculator"); //the window itself (JFrame) with calculator as the name
     JLabel displayLabel = new JLabel(); //label for the text
     JPanel displayPanel = new JPanel(); //panel for the label
-    JPanel buttonsPanel = new JPanel();
+    JPanel buttonsPanel = new JPanel(); //buttons panel
 
     Calculator() { //constructor class for window properties
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName()); //forces java to use its own neutral theme the user's operating system’s buttons, but this statement was added, the buttons were all white and the custom colors didn't apply
+        } 
+        catch (Exception e) { //catches the error and instead of crashing, the program runs the catch statement
+            e.printStackTrace(); //gives name of the error (like ClassNotFoundException) and stack trace showing where the error happened in the code.
+        }
+
         frame.setVisible(true); //true so the window is visible
         frame.setSize(windowWidth, windowHeight); //frame size is same as window width and height
         frame.setLocationRelativeTo(null); //setting location to null centers the window when the user opens the application
@@ -49,13 +56,28 @@ public class Calculator {
 
         buttonsPanel.setLayout(new GridLayout(5, 4)); //grid panel; 5 rows, 4 columns
         buttonsPanel.setBackground(customBlack); //button background
-        frame.add(buttonsPanel); //adds button panel to window
+        frame.add(buttonsPanel, BorderLayout.CENTER); //adds button panel to window and centers it
 
         for (int i = 0; i < buttonValues.length; i++) { //for loop that correlates to the buttonValues array and makes new button
             JButton button = new JButton(); //creates new Jbutton instance
             String buttonValue = buttonValues[i]; //gets the button's label from the array
             button.setFont(new Font("Arial", Font.PLAIN, 30)); //font, formatting, size
             button.setText(buttonValue); //sets the button display text
+            button.setFocusable(false); //makes the retangular border around the button characters invisible
+            button.setOpaque(true); //makes the button opaque
+            if (Arrays.asList(topSymbols).contains(buttonValue)) { //if statement; if the symbol in the for loop is a part of the topSymbols array, run code inside
+                button.setBackground(customLightGray); //button color
+                button.setForeground(customBlack); //font (foreground) color
+            }
+            else if (Arrays.asList(rightSymbols).contains(buttonValue)) { //else if statement; same as the if statement but for rightSymbol arrays instead
+                button.setBackground(customPurple); //button color
+                button.setForeground(Color.white); //font (foreground) color
+            }
+            else { //if it's none of the above, run code below
+                button.setBackground(customDarkGray); //button color
+                button.setForeground(Color.white); //font (foreground) color
+            }
+            
             buttonsPanel.add(button); //adds the button to the panel
         }
     }
